@@ -402,3 +402,6 @@
 	path = ext/providers/jdcloud
 	url = https://github.com/terraform-providers/terraform-provider-jdcloud
 	branch = stable-website
+[submodule "ext/providers/ccloud"]
+	path = ext/providers/ccloud
+	url = https://github.com/sapcc/terraform-provider-ccloud

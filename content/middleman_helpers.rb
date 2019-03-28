@@ -5,7 +5,7 @@ module Helpers
     if (ENV['DEPLOY_ENV'] == 'production')
       'EnEETDWhfxp1rp09jVvJr66LdvwI6KVP'
     else
-      '0EXTgkNx0Ydje2PGXVbRhpKKoe5wtzcE'
+      ''
     end
   end
 
@@ -125,6 +125,11 @@ module Helpers
       # for historical reasons.
       if provider == "do"
         provider = "digitalocean"
+      end
+
+      # ccloud has a different github url
+      if provider == "ccloud"
+        return "https://github.com/sapcc/terraform-provider-#{provider}/edit/master/#{rel}"
       end
 
       return "https://github.com/terraform-providers/terraform-provider-#{provider}/edit/master/#{rel}"

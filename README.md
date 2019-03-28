@@ -63,3 +63,10 @@ branch:
 $ cd ext/providers/rundeck
 $ git checkout stable-website
 ```
+
+## Build Converged Cloud Documentation
+
+```sh
+git submodule update --init ext/terraform ext/providers/ccloud
+PROVIDER_NAME=ccloud PROVIDER_PATH="$(readlink -f ext/providers/ccloud)" make website-provider-build
+```

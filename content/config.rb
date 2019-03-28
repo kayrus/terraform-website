@@ -1,4 +1,6 @@
-set :base_url, "https://www.terraform.io/"
+set :base_url, ""
+
+activate :relative_assets
 
 activate :hashicorp do |h|
   h.name        = "terraform"

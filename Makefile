@@ -11,10 +11,10 @@ build:
 		--tty \
 		--volume "$(shell pwd)/ext:/ext" \
 		--volume "$(shell pwd)/content:/website" \
-		--volume "$(shell pwd)/content/build:/website/build" \
+		--volume "$(shell readlink -f `pwd`/content/build):/website/build" \
 		-e "DEPLOY_ENV=${DEPLOY_ENV}" \
 		hashicorp/middleman-hashicorp:${VERSION} \
-		bundle exec middleman build --verbose --clean
+		bundle exec middleman build --no-clean --verbose --clean
 
 website:
 	@echo "==> Starting website in Docker..."
@@ -71,6 +71,36 @@ endif
 		--workdir /terraform-website \
 		-e PROVIDER_SLUG=$(PROVIDER_SLUG) \
 		hashicorp/middleman-hashicorp:${VERSION}
+
+website-provider-build:
+ifeq ($(PROVIDER_PATH),)
+	@echo 'Please set PROVIDER_PATH'
+	exit 1
+endif
+ifeq ($(PROVIDER_NAME),)
+	@echo 'Please set PROVIDER_NAME'
+	exit 1
+endif
+ifeq ($(PROVIDER_SLUG),)
+	$(eval PROVIDER_SLUG := $(PROVIDER_NAME))
+endif
+	@echo "==> Starting $(PROVIDER_SLUG) provider website in Docker..."
+	@docker run \
+		--interactive \
+		--rm \
+		--tty \
+		--publish "4567:4567" \
+		--publish "35729:35729" \
+		--volume "$(PROVIDER_PATH)/website:/website" \
+		--volume "$(PROVIDER_PATH)/website:/ext/providers/$(PROVIDER_NAME)/website" \
+		--volume "$(shell pwd)/content:/terraform-website" \
+		--volume "$(shell readlink -f `pwd`/content/build):/terraform-website/build" \
+		--volume "$(shell pwd)/content/source/assets:/website/docs/assets" \
+		--volume "$(shell pwd)/content/source/layouts:/website/docs/layouts" \
+		--workdir /terraform-website \
+		-e PROVIDER_SLUG=$(PROVIDER_SLUG) \
+		hashicorp/middleman-hashicorp:${VERSION} \
+		bundle exec middleman build --no-clean --verbose --clean
 
 website-provider-test:
 ifeq ($(PROVIDER_PATH),)
